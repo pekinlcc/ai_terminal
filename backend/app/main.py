@@ -18,7 +18,7 @@ app = FastAPI()
 # CORS configuration
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],
+    allow_origins=["http://localhost:5173", "http://localhost:3000"],
     allow_credentials=True,
     allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["*"],
@@ -30,7 +30,7 @@ app.add_middleware(
 async def add_websocket_cors_headers(request, call_next):
     response = await call_next(request)
     if request.url.path == "/ws":
-        response.headers["Access-Control-Allow-Origin"] = "http://localhost:5173"
+        response.headers["Access-Control-Allow-Origin"] = request.headers.get("origin", "http://localhost:5173")
     return response
 
 @app.get("/healthz")
